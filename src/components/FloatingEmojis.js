@@ -1,19 +1,20 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useCallback } from 'react';
+
+// Constants moved outside component to avoid re-creation on every render
+const celebrationEmojis = [
+  '🎉', '🎊', '🎂', '🎈', '🎁', '✨', '🌟', '💫', '🎀', '🎪',
+  '🎭', '🎨', '🎵', '🎶', '💖', '💝', '🥳', '🎊', '🎉', '✨'
+];
+
+const birthdayEmojis = ['🎂', '🎉', '🎊', '🥳', '🎈', '🎁'];
+const animationTypes = ['floatAround', 'floatSideways', 'floatDiagonal'];
+const sizeClasses = ['small', '', 'large'];
 
 const FloatingEmojis = () => {
   const containerRef = useRef(null);
   const intervalRef = useRef(null);
 
-  const celebrationEmojis = [
-    '🎉', '🎊', '🎂', '🎈', '🎁', '✨', '🌟', '💫', '🎀', '🎪',
-    '🎭', '🎨', '🎵', '🎶', '💖', '💝', '🥳', '🎊', '🎉', '✨'
-  ];
-
-  const birthdayEmojis = ['🎂', '🎉', '🎊', '🥳', '🎈', '🎁'];
-  const animationTypes = ['floatAround', 'floatSideways', 'floatDiagonal'];
-  const sizeClasses = ['small', '', 'large'];
-
-  const createFloatingEmoji = () => {
+  const createFloatingEmoji = useCallback(() => {
     if (!containerRef.current) return;
 
     const emoji = document.createElement('div');
@@ -65,9 +66,9 @@ const FloatingEmojis = () => {
         emoji.parentNode.removeChild(emoji);
       }
     }, (duration + delay + 1) * 1000);
-  };
+  }, []);
 
-  const createSpecialBirthdayBurst = () => {
+  const createSpecialBirthdayBurst = useCallback(() => {
     if (!containerRef.current) return;
 
     const emoji = document.createElement('div');
@@ -87,7 +88,7 @@ const FloatingEmojis = () => {
         emoji.parentNode.removeChild(emoji);
       }
     }, 15000);
-  };
+  }, []);
 
   useEffect(() => {
     // Create initial batch of emojis
@@ -131,7 +132,7 @@ const FloatingEmojis = () => {
       }
       window.removeEventListener('scroll', handleScroll);
     };
-  }, []);
+  }, [createFloatingEmoji, createSpecialBirthdayBurst]);
 
   return <div ref={containerRef} className="floating-emojis" id="floatingEmojis"></div>;
 };
