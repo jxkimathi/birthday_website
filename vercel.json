@@ -48,10 +48,5 @@
   ],
   "env": {
     "GENERATE_SOURCEMAP": "false"
-  },
-  "functions": {
-    "app/api/hello.js": {
-      "runtime": "nodejs18.x"
-    }
   }
 }
