@@ -2,12 +2,12 @@
 @import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&display=swap');
 
 :root {
-    --primary-color: #38ef7d;
-    --secondary-color: #2c3e50;
-    --tertiary-color: #ffd700;
-    --text-color: #ffffff;
-    --heading-color: #ffd700;
-    --glow-color: rgba(255, 215, 0, 0.6);
+    --primary-color: #dc143c;     /* Crimson Red */
+    --secondary-color: #000000;   /* Black */
+    --tertiary-color: #ffffff;    /* White */
+    --text-color: #ffffff;        /* White text */
+    --heading-color: #dc143c;     /* Red headings */
+    --glow-color: rgba(220, 20, 60, 0.6); /* Red glow */
 }
 
 * {
@@ -21,7 +21,9 @@ body {
     line-height: 1.6;
     color: #fff;
     overflow-x: hidden;
-    background: linear-gradient(135deg, #38ef7d 0%, #ffd700 50%, #2c3e50 100%);
+    background: linear-gradient(135deg, #000000 0%, #ffffff 25%, #dc143c 50%, #000000 75%, #ffffff 100%);
+    background-size: 400% 400%;
+    animation: gradientShift 20s ease infinite;
     background-attachment: fixed;
     min-height: 100vh;
     position: relative;
@@ -138,8 +140,8 @@ body::before {
     height: 100%;
     background: 
         radial-gradient(circle at 20% 30%, var(--glow-color) 0%, transparent 50%),
-        radial-gradient(circle at 80% 70%, var(--glow-color) 0%, transparent 50%),
-        radial-gradient(circle at 40% 80%, rgba(56, 239, 125, 0.3) 0%, transparent 50%);
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 40% 80%, rgba(220, 20, 60, 0.3) 0%, transparent 50%);
     z-index: -1;
     opacity: 0.4;
     animation: backgroundShift 20s ease-in-out infinite alternate;
@@ -148,6 +150,18 @@ body::before {
 @keyframes backgroundShift {
     0% { transform: translateX(-2%) translateY(-2%); }
     100% { transform: translateX(2%) translateY(2%); }
+}
+
+@keyframes gradientShift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
 }
 
 .container {
@@ -179,7 +193,7 @@ body::before {
         0 0 20px var(--glow-color),
         0 0 40px var(--glow-color),
         3px 3px 6px rgba(0,0,0,0.8);
-    animation: float3D 6s ease-in-out infinite;
+    animation: float3DSlow 12s ease-in-out infinite;
 }
 
 .hero-subtitle {
@@ -187,7 +201,7 @@ body::before {
     margin-bottom: 3rem;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    animation: float3D 6s ease-in-out infinite 1s;
+    animation: float3DSlow 12s ease-in-out infinite 2s;
 }
 
 .scroll-indicator {
@@ -248,15 +262,15 @@ body::before {
 
 /* Blur Background Text Wrapper */
 .text-blur-wrapper {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, 0.7);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(220, 20, 60, 0.3);
     border-radius: 20px;
     padding: 2rem;
     box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.3),
-        0 0 20px rgba(255, 215, 0, 0.1);
+        0 8px 32px rgba(0, 0, 0, 0.5),
+        0 0 20px rgba(220, 20, 60, 0.3);
     transition: all 0.3s ease;
     /* Unified floating animation for the entire wrapper */
     animation: float3DSlow 8s ease-in-out infinite;
@@ -280,10 +294,10 @@ body::before {
 }
 
 .text-blur-wrapper:hover {
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.8);
     box-shadow: 
-        0 12px 40px rgba(0, 0, 0, 0.4),
-        0 0 30px rgba(255, 215, 0, 0.2);
+        0 12px 40px rgba(0, 0, 0, 0.6),
+        0 0 30px rgba(220, 20, 60, 0.4);
     transform: translateY(-2px);
 }
 
@@ -388,7 +402,7 @@ body::before {
 /* Birthday Message Section */
 .birthday-message {
     min-height: 80vh;
-    background: linear-gradient(135deg, #8cf5a3 0%, #fff59d 50%, #7a8c9e 100%);
+    background: linear-gradient(135deg, #000000 0%, #dc143c 25%, #ffffff 50%, #000000 75%, #dc143c 100%);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -397,6 +411,7 @@ body::before {
     transition: all 0.5s ease;
     position: relative;
     overflow: hidden;
+    padding: 4rem 2rem;
 }
 
 .birthday-message::before {
@@ -407,15 +422,22 @@ body::before {
     width: 100%;
     height: 100%;
     background: 
-        radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.3) 0%, transparent 50%),
-        radial-gradient(circle at 70% 60%, rgba(56, 239, 125, 0.2) 0%, transparent 50%);
+        radial-gradient(circle at 30% 40%, rgba(220, 20, 60, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 70% 60%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
     z-index: 1;
-    animation: birthdayGlow 4s ease-in-out infinite alternate;
+    animation: gentleBirthdayGlow 8s ease-in-out infinite alternate;
 }
 
-@keyframes birthdayGlow {
-    0% { opacity: 0.7; }
-    100% { opacity: 1; }
+@media (max-width: 768px) {
+    .birthday-message::before {
+        z-index: 1 !important;
+        opacity: 0.8 !important;
+    }
+}
+
+@keyframes gentleBirthdayGlow {
+    0% { opacity: 0.6; }
+    100% { opacity: 0.9; }
 }
 
 .message-content {
@@ -433,7 +455,7 @@ body::before {
         0 0 20px var(--glow-color),
         0 0 40px var(--glow-color),
         3px 3px 6px rgba(0,0,0,0.8);
-    animation: float3D 5s ease-in-out infinite;
+    animation: float3DSlow 15s ease-in-out infinite;
 }
 
 .message-content p {
@@ -442,18 +464,23 @@ body::before {
     margin-bottom: 2rem;
     color: #fff;
     text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
-    animation: float3D 5s ease-in-out infinite 1s;
+    animation: float3DSlow 15s ease-in-out infinite 3s;
 }
 
 .birthday-animation {
     font-size: 4rem;
-    animation: pulse 2s ease-in-out infinite alternate, float3D 6s ease-in-out infinite 2s;
-    filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.8));
+    animation: gentlePulse 4s ease-in-out infinite alternate, float3DSlow 15s ease-in-out infinite 6s;
+    filter: drop-shadow(0 0 15px rgba(220, 20, 60, 0.8));
 }
 
 @keyframes pulse {
     0% { transform: scale(1); }
     100% { transform: scale(1.1); }
+}
+
+@keyframes gentlePulse {
+    0% { transform: scale(1); }
+    100% { transform: scale(1.03); }
 }
 
 /* 3D Floating Animations */
@@ -510,6 +537,15 @@ body::before {
 
 /* Responsive Design */
 @media (max-width: 768px) {
+    /* Ensure birthday message is visible on mobile - debug rule */
+    .birthday-message,
+    .birthday-message *,
+    .message-content,
+    .message-content * {
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
     /* Reduce motion for better mobile performance */
     @media (prefers-reduced-motion: reduce) {
         * {
@@ -522,20 +558,26 @@ body::before {
     /* Body and main container adjustments */
     body {
         overflow-x: hidden;
+        padding-bottom: 2rem;
     }
     
     .app {
         width: 100%;
         max-width: 100vw;
         overflow-x: hidden;
+        padding-bottom: 2rem;
     }
     
-    /* Hero section mobile improvements */
+    /* Hero section mobile improvements - better slide-in */
     .hero-title {
         font-size: clamp(2rem, 8vw, 2.5rem);
         line-height: 1.2;
         margin-bottom: 1rem;
         text-align: center;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: heroSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        animation-delay: 0.3s;
     }
     
     .hero-subtitle {
@@ -545,6 +587,22 @@ body::before {
         max-width: 90%;
         margin-left: auto;
         margin-right: auto;
+        opacity: 0;
+        transform: translateY(30px);
+        animation: heroSlideIn 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        animation-delay: 0.6s;
+    }
+
+    /* Hero slide-in keyframe */
+    @keyframes heroSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
     /* Memory section mobile layout */
@@ -552,6 +610,10 @@ body::before {
         padding: 2rem 1rem;
         margin-bottom: 2rem;
         min-height: auto;
+        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
     .content-wrapper {
@@ -560,64 +622,85 @@ body::before {
         max-width: 100%;
         width: 100%;
         padding: 0;
+        justify-items: center;
+        text-align: center;
     }
     
     .memory-section.reverse .content-wrapper {
         direction: ltr;
         grid-template-columns: 1fr;
+        justify-items: center;
+        text-align: center;
     }
     
     .text-content {
         padding: 1rem;
         order: 2;
         width: 100%;
+        max-width: 90vw;
         box-sizing: border-box;
         opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.5s ease-out 0.1s;
+        transform: translateY(30px);
+        transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
     
-    /* Mobile blur wrapper adjustments - more stable */
+    /* Mobile blur wrapper adjustments - better slide-in */
     .text-blur-wrapper {
         padding: 1.5rem;
         border-radius: 15px;
         backdrop-filter: blur(6px);
         -webkit-backdrop-filter: blur(6px);
-        background: rgba(0, 0, 0, 0.15);
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        background: rgba(0, 0, 0, 0.8);
+        border: 1px solid rgba(220, 20, 60, 0.3);
         max-width: 100%;
         width: 100%;
         box-sizing: border-box;
-        /* Remove complex animations on mobile for better performance */
+        text-align: center;
+        margin: 0 auto;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        /* Remove complex floating animations on mobile for better performance */
         animation: none;
     }
     
     .memory-section.active .text-content {
         opacity: 1;
         transform: translateY(0);
+        transition-delay: 0.1s;
+    }
+    
+    .memory-section.active .text-blur-wrapper {
+        opacity: 1;
+        transform: translateY(0);
+        transition-delay: 0.2s;
     }
     
     .memory-section.active .text-content h2 {
         opacity: 1;
         transform: translateX(0);
-        transition-delay: 0.2s;
+        transition-delay: 0.4s;
     }
     
     .memory-section.active .text-content p {
         opacity: 1;
         transform: translateX(0);
-        transition-delay: 0.3s;
+        transition-delay: 0.5s;
     }
     
-    /* Photo container mobile improvements */
+    /* Photo container mobile improvements - better slide-in */
     .photo-container {
         height: 280px;
         order: 1;
         opacity: 0;
-        transform: scale(0.95) translateY(15px);
-        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-        width: 100%;
-        max-width: 100%;
+        transform: scale(0.9) translateY(40px);
+        transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        width: 90%;
+        max-width: 400px;
+        margin: 0 auto;
         box-sizing: border-box;
         /* Reduce complex animations on mobile */
         animation: none;
@@ -642,33 +725,127 @@ body::before {
         border-radius: 15px;
     }
     
-    /* Typography mobile adjustments */
+    /* Typography mobile adjustments - improved slide-in */
     .text-content h2 {
         font-size: clamp(1.5rem, 6vw, 2rem);
         line-height: 1.3;
         margin-bottom: 0.8rem;
+        text-align: center;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(15px);
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
     
     .text-content p {
         font-size: clamp(0.9rem, 4vw, 1rem);
         line-height: 1.6;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
+        opacity: 0;
+        transform: translateY(15px);
+        transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    
+    .message-content {
+        text-align: center;
+        padding: 2rem 1rem;
+        max-width: 90vw;
+        margin: 0 auto;
+        opacity: 1;
+        transform: translateY(0);
+        animation: none;
     }
     
     .message-content h2 {
         font-size: clamp(1.5rem, 6vw, 2rem);
         margin-bottom: 1rem;
+        text-align: center;
+        opacity: 1;
+        transform: translateY(0);
+        animation: none;
     }
     
     .message-content p {
         font-size: clamp(1rem, 4vw, 1.1rem);
         line-height: 1.6;
         max-width: 100%;
+        text-align: center;
+        margin: 0 auto;
+        opacity: 1;
+        transform: translateY(0);
+        animation: none;
+    }
+
+    /* Message slide-in keyframe */
+    @keyframes messageSlideIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
     
-    /* Birthday animation mobile */
+    /* Birthday animation mobile - visible by default */
     .birthday-animation {
         font-size: clamp(2rem, 8vw, 3rem);
-        margin: 1rem 0;
+        margin: 1rem auto;
+        text-align: center;
+        display: block;
+        width: 100%;
+        opacity: 1;
+        transform: translateY(0) scale(1);
+        animation: none;
+    }
+    
+    /* Birthday message section mobile adjustments */
+    .birthday-message {
+        min-height: auto !important;
+        padding: 3rem 1rem 4rem 1rem !important;
+        margin-bottom: 3rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        text-align: center !important;
+        position: relative !important;
+        z-index: 10 !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+    }
+    
+    .birthday-message .message-content {
+        padding: 1rem !important;
+        margin-bottom: 2rem !important;
+        z-index: 11 !important;
+        position: relative !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        display: block !important;
+    }
+    
+    .birthday-message .message-content h2 {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        z-index: 12 !important;
+    }
+    
+    .birthday-message .message-content p {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        z-index: 12 !important;
+    }
+    
+    .birthday-message .birthday-animation {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        z-index: 12 !important;
     }
     
     /* Floating emojis - reduce on mobile for performance */
@@ -681,10 +858,28 @@ body::before {
         min-height: 200px;
         padding: 2rem 1rem;
         touch-action: manipulation;
+        text-align: center;
+        margin: 0 auto;
+        width: 90%;
+        max-width: 400px;
     }
     
     .photo-upload-area:active {
         background: rgba(255, 255, 255, 0.1);
+    }
+    
+    /* Center all editable elements */
+    .editable-text {
+        text-align: center;
+        display: block;
+        width: 100%;
+        margin: 0 auto;
+    }
+    
+    .editable-text-container {
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
     
     /* Mobile-specific gentle animation for blur wrappers only when needed */
@@ -711,49 +906,107 @@ body::before {
 
 /* Extra small mobile devices */
 @media (max-width: 480px) {
+    body {
+        padding-bottom: 3rem;
+    }
+    
     .hero-title {
         font-size: clamp(1.8rem, 10vw, 2.2rem);
         padding: 0 0.5rem;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
     
     .hero-subtitle {
         font-size: clamp(0.9rem, 5vw, 1.1rem);
         padding: 0 1rem;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
     
     .memory-section {
         padding: 1.5rem 0.75rem;
         margin-bottom: 1.5rem;
+        text-align: center;
     }
     
     .text-blur-wrapper {
         padding: 1rem;
         border-radius: 12px;
+        text-align: center;
+        margin: 0 auto;
+        max-width: 95vw;
     }
     
     .photo-container {
         height: 250px;
-        margin-bottom: 1rem;
+        margin: 0 auto 1rem auto;
+        width: 90%;
+        max-width: 350px;
     }
     
     .text-content h2 {
         font-size: clamp(1.3rem, 7vw, 1.8rem);
         margin-bottom: 0.5rem;
+        text-align: center;
+        width: 100%;
     }
     
     .text-content p {
         font-size: clamp(0.85rem, 4.5vw, 0.95rem);
         line-height: 1.5;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
     
     .message-content {
         padding: 1rem;
+        text-align: center;
+        margin: 0 auto;
+        max-width: 95vw;
+        margin-bottom: 2rem;
+        opacity: 1;
+        transform: translateY(0);
+        animation: none;
+    }
+    
+    .birthday-message {
+        padding: 3rem 0.75rem 4rem 0.75rem !important;
+        margin-bottom: 4rem !important;
+        min-height: auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        visibility: visible !important;
+        opacity: 1 !important;
+        z-index: 10 !important;
+    }
+    
+    .birthday-message .message-content {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        margin-bottom: 3rem !important;
+    }
+    
+    .birthday-message .birthday-animation {
+        opacity: 1 !important;
+        visibility: visible !important;
+        display: block !important;
+        margin: 2rem auto !important;
     }
     
     .photo-upload-area {
         min-height: 180px;
         padding: 1.5rem 0.75rem;
         font-size: 0.9rem;
+        text-align: center;
+        margin: 0 auto;
+        width: 85%;
+        max-width: 320px;
     }
 }
 
@@ -909,17 +1162,26 @@ body::before {
         padding: 10px;
         font-size: 0.95rem;
         min-height: 70px;
+        text-align: center;
+        margin: 0 auto;
+        width: 100%;
     }
     
     .editable-textarea.heading-textarea {
         font-size: clamp(1.5rem, 6vw, 2rem);
         min-height: 50px;
         padding: 8px;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
     
     .hero-title.editable-textarea.heading-textarea {
         font-size: clamp(2rem, 8vw, 2.5rem);
         min-height: 55px;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
     
     .edit-controls {
@@ -940,6 +1202,10 @@ body::before {
         min-height: 44px;
         display: flex;
         align-items: center;
+        justify-content: center;
         touch-action: manipulation;
+        text-align: center;
+        width: 100%;
+        margin: 0 auto;
     }
 }
