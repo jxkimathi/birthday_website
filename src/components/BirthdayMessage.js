@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import EditableText from './EditableText';
+import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorage';
 
 const BirthdayMessage = () => {
   const [isActive, setIsActive] = useState(false);
@@ -11,13 +12,20 @@ const BirthdayMessage = () => {
 
   // Load saved message and title from localStorage on component mount
   useEffect(() => {
-    const savedMessage = localStorage.getItem('birthday-message-text');
-    const savedTitle = localStorage.getItem('birthday-message-title');
-    if (savedMessage) {
-      setMessageText(savedMessage);
-    }
-    if (savedTitle) {
-      setMessageTitle(savedTitle);
+    try {
+      const savedMessage = getLocalStorageItem('birthday-message-text');
+      const savedTitle = getLocalStorageItem('birthday-message-title');
+      
+      if (savedMessage) {
+        setMessageText(savedMessage);
+        console.log('Loaded saved birthday message:', savedMessage.substring(0, 50) + '...');
+      }
+      if (savedTitle) {
+        setMessageTitle(savedTitle);
+        console.log('Loaded saved birthday message title:', savedTitle);
+      }
+    } catch (error) {
+      console.error('Error loading birthday message from localStorage:', error);
     }
   }, []);
 
@@ -47,13 +55,23 @@ const BirthdayMessage = () => {
   }, []);
 
   const handleMessageSave = (newText) => {
-    setMessageText(newText);
-    localStorage.setItem('birthday-message-text', newText);
+    try {
+      setMessageText(newText);
+      setLocalStorageItem('birthday-message-text', newText);
+      console.log('Saved birthday message:', newText.substring(0, 50) + '...');
+    } catch (error) {
+      console.error('Error saving birthday message to localStorage:', error);
+    }
   };
 
   const handleTitleSave = (newTitle) => {
-    setMessageTitle(newTitle);
-    localStorage.setItem('birthday-message-title', newTitle);
+    try {
+      setMessageTitle(newTitle);
+      setLocalStorageItem('birthday-message-title', newTitle);
+      console.log('Saved birthday message title:', newTitle);
+    } catch (error) {
+      console.error('Error saving birthday message title to localStorage:', error);
+    }
   };
 
   return (
