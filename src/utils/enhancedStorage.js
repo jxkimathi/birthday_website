@@ -14,7 +14,7 @@ import {
 } from './apiStorage.js';
 
 // Configuration
-const SYNC_ENABLED = true; // Set to false to disable API sync
+const SYNC_ENABLED = process.env.NODE_ENV === 'production'; // Only enable in production
 const SYNC_TIMEOUT = 5000; // 5 seconds timeout for API calls
 
 // Enhanced storage that syncs with both localStorage and API

@@ -1,11 +1,14 @@
 // API utility functions for communicating with the backend
-// API utility functions for communicating with the backend
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? '/api'  // Use relative path for Vercel deployment
-  : '/api';
+const API_BASE_URL = '/api';
+const IS_DEVELOPMENT = process.env.NODE_ENV === 'development';
 
 // Fetch all website data from the server
 export const fetchWebsiteData = async () => {
+  if (IS_DEVELOPMENT) {
+    console.log('🔧 Development mode: Skipping API call');
+    return null;
+  }
+  
   try {
     const response = await fetch(`${API_BASE_URL}/data`);
     if (!response.ok) {
@@ -22,6 +25,11 @@ export const fetchWebsiteData = async () => {
 
 // Update a specific field on the server
 export const updateWebsiteData = async (key, value) => {
+  if (IS_DEVELOPMENT) {
+    console.log('🔧 Development mode: Skipping API call for', key);
+    return null;
+  }
+  
   try {
     const response = await fetch(`${API_BASE_URL}/data`, {
       method: 'POST',
@@ -50,6 +58,11 @@ export const updateWebsiteData = async (key, value) => {
 
 // Save all website data to the server
 export const saveAllWebsiteData = async (data) => {
+  if (IS_DEVELOPMENT) {
+    console.log('🔧 Development mode: Skipping API call for bulk save');
+    return null;
+  }
+  
   try {
     const response = await fetch(`${API_BASE_URL}/data`, {
       method: 'PUT',
