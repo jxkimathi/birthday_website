@@ -10,7 +10,8 @@ export const generateUpdatedDefaults = () => {
     heroSubtitle: currentData.heroSubtitle || "Celebrating another amazing year of memories",
     birthdayMessageTitle: currentData.birthdayMessageTitle || "Wishing You the Happiest Birthday!",
     birthdayMessageText: currentData.birthdayMessageText || "May this new year of your life be filled with love, laughter, adventure, and all the happiness your heart can hold. You deserve nothing but the best, today and always.",
-    memories: {}
+    memories: {},
+    photos: {}
   };
 
   // Generate memory defaults
@@ -20,6 +21,20 @@ export const generateUpdatedDefaults = () => {
       defaults.memories[i] = {
         title: memory.title || `Memory ${i}`,
         text: memory.text || `Default text for memory ${i}`
+      };
+    }
+  }
+
+  // Generate photo defaults
+  const defaultPhotos = JSON.parse(localStorage.getItem('default-photos') || '{}');
+  for (let i = 1; i <= 10; i++) {
+    const photoId = `photo${i}.jpg`;
+    const defaultPhoto = localStorage.getItem(`default-${photoId}`);
+    if (defaultPhoto && defaultPhotos[photoId]) {
+      defaults.photos[photoId] = {
+        data: defaultPhoto,
+        timestamp: defaultPhotos[photoId].timestamp,
+        originalSrc: defaultPhotos[photoId].originalSrc
       };
     }
   }
@@ -194,21 +209,80 @@ export const resetToOriginalDefaults = () => {
     for (let i = 1; i <= 10; i++) {
       localStorage.removeItem(`memory-title-${i}`);
       localStorage.removeItem(`memory-text-${i}`);
+      localStorage.removeItem(`photo${i}.jpg`);
+      localStorage.removeItem(`default-photo${i}.jpg`);
     }
     localStorage.removeItem('hero-title');
     localStorage.removeItem('hero-subtitle');
     localStorage.removeItem('birthday-message-title');
     localStorage.removeItem('birthday-message-text');
     localStorage.removeItem('birthday-defaults-backup');
+    localStorage.removeItem('default-photos');
     
-    console.log('🔄 Reset to original defaults');
-    
-    // Reload the page to show original values
+    // Force page reload to show original defaults
     window.location.reload();
-    
-    return true;
   } catch (error) {
     console.error('❌ Error resetting to defaults:', error);
+  }
+};
+
+// Photo-specific default management functions
+export const getPhotoDefaults = () => {
+  try {
+    const defaultPhotos = JSON.parse(localStorage.getItem('default-photos') || '{}');
+    const photoDefaults = {};
+    
+    for (let i = 1; i <= 10; i++) {
+      const photoId = `photo${i}.jpg`;
+      const defaultPhoto = localStorage.getItem(`default-${photoId}`);
+      if (defaultPhoto && defaultPhotos[photoId]) {
+        photoDefaults[photoId] = {
+          data: defaultPhoto,
+          timestamp: defaultPhotos[photoId].timestamp,
+          originalSrc: defaultPhotos[photoId].originalSrc
+        };
+      }
+    }
+    
+    return photoDefaults;
+  } catch (error) {
+    console.error('❌ Error getting photo defaults:', error);
+    return {};
+  }
+};
+
+export const clearAllPhotoDefaults = () => {
+  try {
+    for (let i = 1; i <= 10; i++) {
+      const photoId = `photo${i}.jpg`;
+      localStorage.removeItem(`default-${photoId}`);
+    }
+    localStorage.removeItem('default-photos');
+    
+    console.log('✅ All photo defaults cleared');
+    return true;
+  } catch (error) {
+    console.error('❌ Error clearing photo defaults:', error);
+    return false;
+  }
+};
+
+export const applyPhotoDefaults = () => {
+  try {
+    const photoDefaults = getPhotoDefaults();
+    
+    Object.keys(photoDefaults).forEach(photoId => {
+      // Don't overwrite if user already has a custom photo
+      const existingPhoto = localStorage.getItem(photoId);
+      if (!existingPhoto) {
+        localStorage.setItem(photoId, photoDefaults[photoId].data);
+      }
+    });
+    
+    console.log('✅ Photo defaults applied');
+    return true;
+  } catch (error) {
+    console.error('❌ Error applying photo defaults:', error);
     return false;
   }
 };

@@ -5,7 +5,7 @@ import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorageE
 const BirthdayMessage = () => {
   const [isActive, setIsActive] = useState(false);
   const [messageText, setMessageText] = useState(
-    "May this new year of your life be filled with love, laughter, adventure, and all the happiness your heart can hold. You deserve nothing but the best, today and always."
+    "My love, As you turn a year older I wish you the best. May God favour you in everything that you do. May he guide you and protect you in all your endevours. I pray that as you step into this new year you may get to learn more about yourself. That everyday you may get closer to your destiny. May your blessings be doubled and may you overcome any obstacle thrown your way. I pray that 22 brings you joy, peace, love and abundance. May all your wishes come true. Happy Happy Birthday my love. I thank God for bringing you to me💗"
   );
   const [messageTitle, setMessageTitle] = useState("Wishing You the Happiest Birthday!");
   const sectionRef = useRef(null);

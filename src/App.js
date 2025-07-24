@@ -6,16 +6,24 @@ import BirthdayMessage from './components/BirthdayMessage';
 import FloatingEmojis from './components/FloatingEmojis';
 import DebugPanel from './components/DebugPanel';
 import { initializeEnhancedStorage } from './utils/enhancedStorage';
+import { applyPhotoDefaults } from './utils/defaultsManager';
 
 function App() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  // Initialize enhanced storage on app load
+  // Initialize enhanced storage and photo defaults on app load
   useEffect(() => {
     const initializeData = async () => {
       try {
         await initializeEnhancedStorage();
         console.log('✅ Enhanced storage initialized');
+        
+        // Apply photo defaults for new users
+        const hasExistingData = localStorage.getItem('hero-title') || localStorage.getItem('memory-title-1');
+        if (!hasExistingData) {
+          applyPhotoDefaults();
+          console.log('📷 Photo defaults applied for new user');
+        }
       } catch (error) {
         console.warn('⚠️ Enhanced storage initialization failed, using localStorage only:', error);
       } finally {

@@ -4,7 +4,10 @@ import {
   saveAsDefaults, 
   restoreFromBackup, 
   resetToOriginalDefaults,
-  generateUpdatedDefaults 
+  generateUpdatedDefaults,
+  getPhotoDefaults,
+  clearAllPhotoDefaults,
+  applyPhotoDefaults
 } from '../utils/defaultsManager';
 import { generateAllUpdatedCode, downloadUpdatedFiles } from '../utils/codeGenerator';
 
@@ -78,6 +81,42 @@ const DebugPanel = () => {
       alert('📥 Updated files prepared for download!\n\nCheck your downloads folder for the updated source files.');
     } else {
       alert('❌ Failed to generate download files. Check console for details.');
+    }
+  };
+
+  const handleViewPhotoDefaults = () => {
+    const photoDefaults = getPhotoDefaults();
+    const count = Object.keys(photoDefaults).length;
+    
+    if (count > 0) {
+      console.log('📷 Current photo defaults:', photoDefaults);
+      alert(`📷 Found ${count} photo default(s)!\n\nCheck console for details. Photos that have been set as defaults will be shown to new users.`);
+    } else {
+      alert('📷 No photo defaults found.\n\nRight-click on uploaded photos to set them as defaults.');
+    }
+  };
+
+  const handleClearPhotoDefaults = () => {
+    if (window.confirm('Clear all photo defaults? This will remove all photos that have been set as defaults.')) {
+      const success = clearAllPhotoDefaults();
+      if (success) {
+        alert('✅ All photo defaults cleared!\n\nNew users will now see the original placeholder images.');
+        refreshData();
+      } else {
+        alert('❌ Failed to clear photo defaults. Check console for details.');
+      }
+    }
+  };
+
+  const handleApplyPhotoDefaults = () => {
+    if (window.confirm('Apply photo defaults to current session? This will load any photos that have been set as defaults.')) {
+      const success = applyPhotoDefaults();
+      if (success) {
+        alert('✅ Photo defaults applied!\n\nReload the page to see the default photos.');
+        window.location.reload();
+      } else {
+        alert('❌ Failed to apply photo defaults. Check console for details.');
+      }
     }
   };
 
@@ -232,6 +271,61 @@ const DebugPanel = () => {
           }}
         >
           🔄 Reset Original
+        </button>
+      </div>
+
+      <div style={{ marginBottom: '10px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
+        <div style={{ marginBottom: '5px', fontSize: '11px', opacity: 0.8 }}>
+          <strong>📷 Photo Defaults:</strong>
+        </div>
+        <button 
+          onClick={handleViewPhotoDefaults}
+          style={{ 
+            background: '#6c757d', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          👁️ View Photo Defaults
+        </button>
+        <button 
+          onClick={handleApplyPhotoDefaults}
+          style={{ 
+            background: '#17a2b8', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          📥 Apply Defaults
+        </button>
+        <br />
+        <button 
+          onClick={handleClearPhotoDefaults}
+          style={{ 
+            background: '#dc3545', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          🗑️ Clear Photo Defaults
         </button>
       </div>
 
