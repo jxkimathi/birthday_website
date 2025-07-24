@@ -1,43 +1,36 @@
-import React, { useEffect, useState } from 'react';
-import './App.css';
-import HeroSection from './components/HeroSection';
-import MemorySection from './components/MemorySection';
-import BirthdayMessage from './components/BirthdayMessage';
-import FloatingEmojis from './components/FloatingEmojis';
-import DebugPanel from './components/DebugPanel';
-import { initializeEnhancedStorage } from './utils/enhancedStorage';
+// Utility to persist changes as hardcoded defaults in the source files
+import { getBirthdayDataSummary } from './localStorage';
 
-function App() {
-  const [isDataLoaded, setIsDataLoaded] = useState(false);
+// Generate updated default values based on current localStorage
+export const generateUpdatedDefaults = () => {
+  const currentData = getBirthdayDataSummary();
+  
+  const defaults = {
+    heroTitle: currentData.heroTitle || "Happy Birthday!",
+    heroSubtitle: currentData.heroSubtitle || "Celebrating another amazing year of memories",
+    birthdayMessageTitle: currentData.birthdayMessageTitle || "Wishing You the Happiest Birthday!",
+    birthdayMessageText: currentData.birthdayMessageText || "May this new year of your life be filled with love, laughter, adventure, and all the happiness your heart can hold. You deserve nothing but the best, today and always.",
+    memories: {}
+  };
 
-  // Initialize enhanced storage on app load
-  useEffect(() => {
-    const initializeData = async () => {
-      try {
-        await initializeEnhancedStorage();
-        console.log('✅ Enhanced storage initialized');
-      } catch (error) {
-        console.warn('⚠️ Enhanced storage initialization failed, using localStorage only:', error);
-      } finally {
-        setIsDataLoaded(true);
-      }
-    };
-
-    initializeData();
-  }, []);
-
-  // Show loading state while data is being initialized
-  if (!isDataLoaded) {
-    return (
-      <div className="App">
-        <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
-          <h2>Loading birthday memories...</h2>
-          <p>Syncing data from server...</p>
-        </div>
-      </div>
-    );
+  // Generate memory defaults
+  for (let i = 1; i <= 10; i++) {
+    const memory = currentData.memories[i];
+    if (memory && (memory.title || memory.text)) {
+      defaults.memories[i] = {
+        title: memory.title || `Memory ${i}`,
+        text: memory.text || `Default text for memory ${i}`
+      };
+    }
   }
-  const memoryData = [
+
+  return defaults;
+};
+
+// Generate the code string for App.js memoryData array
+export const generateMemoryDataCode = () => {
+  const defaults = generateUpdatedDefaults();
+  const baseMemoryData = [
     {
       id: 1,
       title: "Childhood Memories",
@@ -47,7 +40,7 @@ function App() {
     },
     {
       id: 2,
-      title: "Adventures Together",
+      title: "Adventures Together", 
       text: "From spontaneous road trips to quiet coffee conversations, we've shared countless adventures that have shaped who we are today. Each journey we've taken together has been filled with laughter, discovery, and the kind of memories that make life truly special. Here's to all the paths we've walked and the many more adventures that await us in the year ahead.",
       photo: "placeholder2.jpg",
       reverse: true
@@ -110,28 +103,112 @@ function App() {
     }
   ];
 
-  return (
-    <div className="App">
-      <FloatingEmojis />
-      <DebugPanel />
-      <div className="container">
-        <HeroSection />
-        
-        {memoryData.map((memory) => (
-          <MemorySection 
-            key={memory.id}
-            id={memory.id}
-            title={memory.title}
-            text={memory.text}
-            photo={memory.photo}
-            reverse={memory.reverse}
-          />
-        ))}
-        
-        <BirthdayMessage />
-      </div>
-    </div>
-  );
-}
+  // Update with current values
+  return baseMemoryData.map(memory => {
+    const customMemory = defaults.memories[memory.id];
+    if (customMemory) {
+      return {
+        ...memory,
+        title: customMemory.title || memory.title,
+        text: customMemory.text || memory.text
+      };
+    }
+    return memory;
+  });
+};
 
-export default App;
+// Generate the code string for HeroSection default states
+export const generateHeroSectionDefaults = () => {
+  const defaults = generateUpdatedDefaults();
+  return {
+    heroTitle: defaults.heroTitle,
+    heroSubtitle: defaults.heroSubtitle
+  };
+};
+
+// Generate the code string for BirthdayMessage default states  
+export const generateBirthdayMessageDefaults = () => {
+  const defaults = generateUpdatedDefaults();
+  return {
+    messageTitle: defaults.birthdayMessageTitle,
+    messageText: defaults.birthdayMessageText
+  };
+};
+
+// Function to save current state as new defaults
+export const saveAsDefaults = async () => {
+  try {
+    console.log('💾 Generating new default values from current state...');
+    
+    const defaults = generateUpdatedDefaults();
+    const memoryData = generateMemoryDataCode();
+    const heroDefaults = generateHeroSectionDefaults();
+    const messageDefaults = generateBirthdayMessageDefaults();
+    
+    // Create a backup of current values
+    const backupData = {
+      timestamp: new Date().toISOString(),
+      defaults,
+      memoryData,
+      heroDefaults,
+      messageDefaults
+    };
+    
+    // Save backup to localStorage
+    localStorage.setItem('birthday-defaults-backup', JSON.stringify(backupData));
+    
+    console.log('✅ New defaults generated and backed up:', {
+      heroTitle: heroDefaults.heroTitle,
+      heroSubtitle: heroDefaults.heroSubtitle,
+      messageTitle: messageDefaults.messageTitle,
+      memoryCount: Object.keys(defaults.memories).length
+    });
+    
+    return backupData;
+  } catch (error) {
+    console.error('❌ Error saving as defaults:', error);
+    return null;
+  }
+};
+
+// Function to restore from backup
+export const restoreFromBackup = () => {
+  try {
+    const backup = localStorage.getItem('birthday-defaults-backup');
+    if (backup) {
+      const data = JSON.parse(backup);
+      console.log('📋 Backup found from:', data.timestamp);
+      return data;
+    }
+    return null;
+  } catch (error) {
+    console.error('❌ Error restoring from backup:', error);
+    return null;
+  }
+};
+
+// Function to clear all customizations and restore original defaults
+export const resetToOriginalDefaults = () => {
+  try {
+    // Clear all localStorage data
+    for (let i = 1; i <= 10; i++) {
+      localStorage.removeItem(`memory-title-${i}`);
+      localStorage.removeItem(`memory-text-${i}`);
+    }
+    localStorage.removeItem('hero-title');
+    localStorage.removeItem('hero-subtitle');
+    localStorage.removeItem('birthday-message-title');
+    localStorage.removeItem('birthday-message-text');
+    localStorage.removeItem('birthday-defaults-backup');
+    
+    console.log('🔄 Reset to original defaults');
+    
+    // Reload the page to show original values
+    window.location.reload();
+    
+    return true;
+  } catch (error) {
+    console.error('❌ Error resetting to defaults:', error);
+    return false;
+  }
+};

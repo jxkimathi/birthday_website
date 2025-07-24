@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { getBirthdayDataSummary, clearAllBirthdayData } from '../utils/localStorage';
+import { 
+  saveAsDefaults, 
+  restoreFromBackup, 
+  resetToOriginalDefaults,
+  generateUpdatedDefaults 
+} from '../utils/defaultsManager';
+import { generateAllUpdatedCode, downloadUpdatedFiles } from '../utils/codeGenerator';
 
 const DebugPanel = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -22,6 +29,55 @@ const DebugPanel = () => {
       refreshData();
       // Force page reload to show default content
       window.location.reload();
+    }
+  };
+
+  const handleSaveAsDefaults = async () => {
+    if (window.confirm('Save current changes as new default values? This will make them the baseline for the website.')) {
+      const result = await saveAsDefaults();
+      if (result) {
+        alert('✅ Current values saved as new defaults!\n\nThe next time someone visits this page, they will see these values as the starting point.');
+        refreshData();
+      } else {
+        alert('❌ Failed to save defaults. Check console for details.');
+      }
+    }
+  };
+
+  const handleRestoreBackup = () => {
+    const backup = restoreFromBackup();
+    if (backup) {
+      alert(`📋 Backup found from: ${new Date(backup.timestamp).toLocaleString()}\n\nCheck console for details.`);
+      console.log('Backup data:', backup);
+    } else {
+      alert('📋 No backup found.');
+    }
+  };
+
+  const handleResetToOriginal = () => {
+    if (window.confirm('Reset to original default values? This will clear all customizations and reload the page.')) {
+      resetToOriginalDefaults();
+    }
+  };
+
+  const handleViewCurrentDefaults = () => {
+    const defaults = generateUpdatedDefaults();
+    console.log('Current defaults that would be saved:', defaults);
+    alert('📋 Current defaults logged to console. Open developer tools to view.');
+  };
+
+  const handleGenerateCode = () => {
+    const updatedCode = generateAllUpdatedCode();
+    alert('🔧 Updated source code generated!\n\nCheck the console for the complete code.\nYou can copy-paste this into your source files to make changes permanent.');
+    return updatedCode;
+  };
+
+  const handleDownloadFiles = () => {
+    const success = downloadUpdatedFiles();
+    if (success) {
+      alert('📥 Updated files prepared for download!\n\nCheck your downloads folder for the updated source files.');
+    } else {
+      alert('❌ Failed to generate download files. Check console for details.');
     }
   };
 
@@ -100,10 +156,120 @@ const DebugPanel = () => {
             padding: '5px 10px', 
             borderRadius: '3px', 
             cursor: 'pointer',
+            marginRight: '5px',
             fontSize: '11px'
           }}
         >
           🗑️ Clear All
+        </button>
+      </div>
+
+      <div style={{ marginBottom: '10px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
+        <div style={{ marginBottom: '5px', fontSize: '11px', opacity: 0.8 }}>
+          <strong>💾 Defaults Management:</strong>
+        </div>
+        <button 
+          onClick={handleSaveAsDefaults}
+          style={{ 
+            background: '#28a745', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          💾 Save as Defaults
+        </button>
+        <button 
+          onClick={handleViewCurrentDefaults}
+          style={{ 
+            background: '#6c757d', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          👁️ View Defaults
+        </button>
+        <br />
+        <button 
+          onClick={handleRestoreBackup}
+          style={{ 
+            background: '#17a2b8', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          📋 View Backup
+        </button>
+        <button 
+          onClick={handleResetToOriginal}
+          style={{ 
+            background: '#fd7e14', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          🔄 Reset Original
+        </button>
+      </div>
+
+      <div style={{ marginBottom: '10px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
+        <div style={{ marginBottom: '5px', fontSize: '11px', opacity: 0.8 }}>
+          <strong>🔧 Code Generation:</strong>
+        </div>
+        <button 
+          onClick={handleGenerateCode}
+          style={{ 
+            background: '#6f42c1', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          🔧 Generate Code
+        </button>
+        <button 
+          onClick={handleDownloadFiles}
+          style={{ 
+            background: '#20c997', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          📥 Download Files
         </button>
       </div>
 
@@ -141,13 +307,17 @@ const DebugPanel = () => {
       )}
       
       <div style={{ marginTop: '15px', padding: '10px', backgroundColor: 'rgba(255, 255, 255, 0.1)', borderRadius: '4px' }}>
-        <strong>How to test persistence:</strong>
-        <ol style={{ margin: '5px 0', paddingLeft: '15px' }}>
-          <li>Edit some text on the page</li>
-          <li>Refresh this panel to see if it's saved</li>
-          <li>Refresh the entire page</li>
-          <li>Check if your changes remain</li>
+        <strong>💾 Making Changes Permanent:</strong>
+        <ol style={{ margin: '5px 0', paddingLeft: '15px', fontSize: '10px' }}>
+          <li>Edit content on the page</li>
+          <li>Click "Generate Code" to create updated source files</li>
+          <li>Copy the generated code from console into your source files</li>
+          <li>Or use "Download Files" to get updated files</li>
+          <li>Deploy the updated files to make changes permanent</li>
         </ol>
+        <div style={{ fontSize: '10px', opacity: 0.7, marginTop: '5px' }}>
+          This makes your edits the new "hardcoded" defaults for all users.
+        </div>
       </div>
     </div>
   );
