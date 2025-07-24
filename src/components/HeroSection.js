@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import EditableText from './EditableText';
-import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorage';
+import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorageEnhanced';
 
 const HeroSection = () => {
   const [heroTitle, setHeroTitle] = useState("Happy Birthday!");
@@ -35,20 +35,20 @@ const HeroSection = () => {
     }
   };
 
-  const handleTitleSave = (newTitle) => {
+  const handleTitleSave = async (newTitle) => {
     try {
       setHeroTitle(newTitle);
-      setLocalStorageItem('hero-title', newTitle);
+      await setLocalStorageItem('hero-title', newTitle);
       console.log('Saved hero title:', newTitle);
     } catch (error) {
       console.error('Error saving hero title to localStorage:', error);
     }
   };
 
-  const handleSubtitleSave = (newSubtitle) => {
+  const handleSubtitleSave = async (newSubtitle) => {
     try {
       setHeroSubtitle(newSubtitle);
-      setLocalStorageItem('hero-subtitle', newSubtitle);
+      await setLocalStorageItem('hero-subtitle', newSubtitle);
       console.log('Saved hero subtitle:', newSubtitle);
     } catch (error) {
       console.error('Error saving hero subtitle to localStorage:', error);

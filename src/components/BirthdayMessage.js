@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import EditableText from './EditableText';
-import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorage';
+import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorageEnhanced';
 
 const BirthdayMessage = () => {
   const [isActive, setIsActive] = useState(false);
@@ -54,20 +54,20 @@ const BirthdayMessage = () => {
     };
   }, []);
 
-  const handleMessageSave = (newText) => {
+  const handleMessageSave = async (newText) => {
     try {
       setMessageText(newText);
-      setLocalStorageItem('birthday-message-text', newText);
+      await setLocalStorageItem('birthday-message-text', newText);
       console.log('Saved birthday message:', newText.substring(0, 50) + '...');
     } catch (error) {
       console.error('Error saving birthday message to localStorage:', error);
     }
   };
 
-  const handleTitleSave = (newTitle) => {
+  const handleTitleSave = async (newTitle) => {
     try {
       setMessageTitle(newTitle);
-      setLocalStorageItem('birthday-message-title', newTitle);
+      await setLocalStorageItem('birthday-message-title', newTitle);
       console.log('Saved birthday message title:', newTitle);
     } catch (error) {
       console.error('Error saving birthday message title to localStorage:', error);

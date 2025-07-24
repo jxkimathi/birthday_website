@@ -1,11 +1,41 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import HeroSection from './components/HeroSection';
 import MemorySection from './components/MemorySection';
 import BirthdayMessage from './components/BirthdayMessage';
 import FloatingEmojis from './components/FloatingEmojis';
+import { initializeEnhancedStorage } from './utils/enhancedStorage';
 
 function App() {
+  const [isDataLoaded, setIsDataLoaded] = useState(false);
+
+  // Initialize enhanced storage on app load
+  useEffect(() => {
+    const initializeData = async () => {
+      try {
+        await initializeEnhancedStorage();
+        console.log('✅ Enhanced storage initialized');
+      } catch (error) {
+        console.warn('⚠️ Enhanced storage initialization failed, using localStorage only:', error);
+      } finally {
+        setIsDataLoaded(true);
+      }
+    };
+
+    initializeData();
+  }, []);
+
+  // Show loading state while data is being initialized
+  if (!isDataLoaded) {
+    return (
+      <div className="App">
+        <div className="container" style={{ textAlign: 'center', padding: '50px' }}>
+          <h2>Loading birthday memories...</h2>
+          <p>Syncing data from server...</p>
+        </div>
+      </div>
+    );
+  }
   const memoryData = [
     {
       id: 1,

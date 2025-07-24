@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import PhotoContainer from './PhotoContainer';
 import EditableText from './EditableText';
-import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorage';
+import { getLocalStorageItem, setLocalStorageItem } from '../utils/localStorageEnhanced';
 
 const MemorySection = ({ id, title, text, photo, reverse, onTextUpdate }) => {
   const [isActive, setIsActive] = useState(false);
@@ -53,10 +53,10 @@ const MemorySection = ({ id, title, text, photo, reverse, onTextUpdate }) => {
     };
   }, []);
 
-  const handleTextSave = (newText) => {
+  const handleTextSave = async (newText) => {
     try {
       setCurrentText(newText);
-      setLocalStorageItem(`memory-text-${id}`, newText);
+      await setLocalStorageItem(`memory-text-${id}`, newText);
       console.log(`Saved text for memory ${id}:`, newText.substring(0, 50) + '...');
       if (onTextUpdate) {
         onTextUpdate(id, newText);
@@ -66,10 +66,10 @@ const MemorySection = ({ id, title, text, photo, reverse, onTextUpdate }) => {
     }
   };
 
-  const handleTitleSave = (newTitle) => {
+  const handleTitleSave = async (newTitle) => {
     try {
       setCurrentTitle(newTitle);
-      setLocalStorageItem(`memory-title-${id}`, newTitle);
+      await setLocalStorageItem(`memory-title-${id}`, newTitle);
       console.log(`Saved title for memory ${id}:`, newTitle);
     } catch (error) {
       console.error('Error saving title to localStorage:', error);
