@@ -6,24 +6,16 @@ import BirthdayMessage from './components/BirthdayMessage';
 import FloatingEmojis from './components/FloatingEmojis';
 import DebugPanel from './components/DebugPanel';
 import { initializeEnhancedStorage } from './utils/enhancedStorage';
-import { applyPhotoDefaults } from './utils/defaultsManager';
 
 function App() {
   const [isDataLoaded, setIsDataLoaded] = useState(false);
 
-  // Initialize enhanced storage and photo defaults on app load
+  // Initialize enhanced storage on app load
   useEffect(() => {
     const initializeData = async () => {
       try {
         await initializeEnhancedStorage();
         console.log('✅ Enhanced storage initialized');
-        
-        // Apply photo defaults for new users
-        const hasExistingData = localStorage.getItem('hero-title') || localStorage.getItem('memory-title-1');
-        if (!hasExistingData) {
-          applyPhotoDefaults();
-          console.log('📷 Photo defaults applied for new user');
-        }
       } catch (error) {
         console.warn('⚠️ Enhanced storage initialization failed, using localStorage only:', error);
       } finally {
@@ -45,78 +37,79 @@ function App() {
       </div>
     );
   }
+
   const memoryData = [
     {
-      id: 1,
-      title: "Childhood Memories",
-      text: "Remember when we were kids and every birthday felt like the most magical day of the year? Those innocent times when blowing out candles was the highlight of our day, and cake was the only thing that mattered. The joy in your eyes when you opened presents, the laughter that filled the room - those memories are precious and will always hold a special place in our hearts.",
-      photo: "photo_1.jpg",
-      reverse: false
+        "id": 1,
+        "title": "Who’s that cutie?",
+        "text": "Getting to know you has been amazing because I’ve gotten to see what makes you the person that you are. I’ve gotten to see the things that make you happy and the dreams that you have. Even if I didn’t know you back then I’ve gotten to see that child like wonder that you have and in a a way I’ve gotten so see the inner child in you.",
+        "photo": "placeholder1.jpg",
+        "reverse": false
     },
     {
-      id: 2,
-      title: "Adventures Together",
-      text: "From spontaneous road trips to quiet coffee conversations, we've shared countless adventures that have shaped who we are today. Each journey we've taken together has been filled with laughter, discovery, and the kind of memories that make life truly special. Here's to all the paths we've walked and the many more adventures that await us in the year ahead.",
-      photo: "photo_2.jpg",
-      reverse: true
+        "id": 2,
+        "title": "Memory 2",
+        "text": "This was the second time we ever met and our first little date night. Nothing crazy, just spontaneity and vibes. I took you to my favorite spot in the city and it became our favorite spot. This night is so important to me because it holds so many firsts for us. Our first I love you, Our first drink shared together, our first handshake and our first kiss.",
+        "photo": "placeholder2.jpg",
+        "reverse": true
     },
     {
-      id: 3,
-      title: "Special Moments",
-      text: "Life is made up of small moments that become big memories. Those quiet times when we've shared our deepest thoughts, the celebrations of your achievements, and the comfort we've provided each other during challenging times. These special moments have woven the beautiful tapestry of our friendship and created bonds that time cannot break.",
-      photo: "photo_3.jpg",
-      reverse: false
+        "id": 3,
+        "title": "Memory 3",
+        "text": "Life is made up of small moments that become big memories. Those quiet times when we've shared our deepest thoughts, the celebrations of your achievements, and the comfort we've provided each other during challenging times. These special moments have woven the beautiful tapestry of our relationship and created bonds that time cannot break.",
+        "photo": "placeholder3.jpg",
+        "reverse": false
     },
     {
-      id: 4,
-      title: "Achievements & Milestones",
-      text: "Your journey has been marked by incredible achievements and important milestones that deserve to be celebrated. From personal victories to professional successes, you've shown determination, courage, and grace in everything you do. Each accomplishment is a testament to your character and a reason for all of us who love you to feel proud and inspired.",
-      photo: "photo_4.jpg",
-      reverse: true
+        "id": 4,
+        "title": "Achievements",
+        "text": "Your journey has been marked by incredible achievements that deserve to be celebrated. From personal victories to professional successes, you've shown determination, courage, and grace in everything you do. Each accomplishment is a testament to your character and a reason for all of us who love you to feel proud and inspired",
+        "photo": "placeholder4.jpg",
+        "reverse": true
     },
     {
-      id: 5,
-      title: "Looking Forward",
-      text: "As we celebrate another year of your amazing life, we also look forward to all the wonderful things that await you. New experiences, fresh adventures, deeper connections, and dreams yet to be fulfilled. Your birthday isn't just about celebrating the past - it's about embracing the bright future that lies ahead, filled with endless possibilities and joy.",
-      photo: "photo_5.jpg",
-      reverse: false
+        "id": 5,
+        "title": "Something New",
+        "text": "As we celebrate another year of your amazing life, we also look forward to all the wonderful things that await you. New experiences, fresh adventures, deeper connections, and dreams yet to be fulfilled. Your birthday isn't just about celebrating the past - it's about embracing the bright future that lies ahead, filled with endless possibilities and joy.",
+        "photo": "placeholder5.jpg",
+        "reverse": false
     },
     {
-      id: 6,
-      title: "Family & Friends",
-      text: "The people who surround you with love and support make your life truly rich. From family gatherings filled with laughter to spontaneous meetups with friends, these relationships have shaped who you are today. The bonds you've built, the trust you've earned, and the joy you bring to others' lives are testaments to your beautiful heart and caring spirit.",
-      photo: "photo_6.jpg",
-      reverse: true
+        "id": 6,
+        "title": "Milestones",
+        "text": "This day represents my favorite milestone with you because I got to meet your mom. It felt like finally being part of your world and solidified how much I mean to you. You make me feel at home always and I cannot wait to be part of your life. To many more milestones together both little and big💗",
+        "photo": "placeholder6.jpg",
+        "reverse": true
     },
     {
-      id: 7,
-      title: "Creative Pursuits",
-      text: "Your creative spirit has always been one of your most admirable qualities. Whether it's through art, music, writing, or any other form of expression, you've found ways to bring beauty into the world. These creative moments are not just hobbies - they're reflections of your soul and windows into the unique perspective you share with everyone around you.",
-      photo: "photo_7.jpg",
-      reverse: false
+        "id": 7,
+        "title": "A Few Stumbles",
+        "text": "At the face of adversity you always show real resilience. I admire how you handle conflict or disappointment. I admire your vulnerability when things don’t go your way and your understanding nature when faced with disappointment. I love how you always fight to get through all the challenges you face. I know you’ll always come out on top of whatever troubles you!",
+        "photo": "placeholder7.jpg",
+        "reverse": false
     },
     {
-      id: 8,
-      title: "Challenges Overcome",
-      text: "Life has presented its share of challenges, and you've faced each one with courage and determination. Every obstacle you've overcome has made you stronger, wiser, and more resilient. Your ability to persevere through difficult times while maintaining your positive spirit is truly inspiring and shows the incredible strength of character you possess.",
-      photo: "photo_8.jpg",
-      reverse: true
+        "id": 8,
+        "title": "The Joy of You",
+        "text": "These past four months with you have been my happiest day. You’ve been my source of joy and solace. You’ve held my hand through the toughest times ever and I love you for that. You are my joy, my heart and my world💗",
+        "photo": "placeholder8.jpg",
+        "reverse": true
     },
     {
-      id: 9,
-      title: "Simple Joys",
-      text: "Sometimes the most precious memories come from life's simplest moments. A perfect cup of coffee on a quiet morning, a good book on a rainy day, or sharing laughter over something completely silly. These small joys remind us that happiness doesn't always come from grand gestures - often it's found in the everyday moments that make life beautiful.",
-      photo: "photo_9.jpg",
-      reverse: false
+        "id": 9,
+        "title": "Crazy Nights",
+        "text": "To many more nights where we get to go out and just have a time. The world feels complete when I’m with you and I cherish every moment I get to spend with you and I can’t wait to continue experiencing life with you",
+        "photo": "placeholder9.jpg",
+        "reverse": false
     },
     {
-      id: 10,
-      title: "Dreams & Aspirations",
-      text: "Your dreams and aspirations continue to evolve and inspire not only yourself but everyone who knows you. The goals you've set, the visions you're working toward, and the passion you put into everything you do light up the world around you. As you celebrate another year, know that your dreams are valid, your efforts are noticed, and your potential is limitless.",
-      photo: "photo_10.jpg",
-      reverse: true
+        "id": 10,
+        "title": "Looking Forward",
+        "text": "The man I see and get to love has shown me so much that he is capable of. As you grow older I know you will work harder to achieve your dreams. Never lose sight of who you are. You’re lucky to know that you want to help people. You have so much to offer this world. There’s so much space for you to take up in this world and I will be there with you!💗",
+        "photo": "placeholder10.jpg",
+        "reverse": true
     }
-  ];
+];
 
   return (
     <div className="App">
