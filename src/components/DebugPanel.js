@@ -7,7 +7,9 @@ import {
   generateUpdatedDefaults,
   getPhotoDefaults,
   clearAllPhotoDefaults,
-  applyPhotoDefaults
+  applyPhotoDefaults,
+  getStorageUsage,
+  cleanupLocalStorage
 } from '../utils/defaultsManager';
 import { generateAllUpdatedCode, downloadUpdatedFiles } from '../utils/codeGenerator';
 
@@ -23,6 +25,17 @@ const DebugPanel = () => {
   useEffect(() => {
     if (isVisible) {
       refreshData();
+      
+      // Check storage usage and warn if high
+      const usage = getStorageUsage();
+      if (usage && usage.usagePercent > 85) {
+        console.warn(`⚠️ Storage usage is high: ${usage.usagePercent}%`);
+        // Auto-cleanup if very high
+        if (usage.usagePercent > 95) {
+          console.log('🧹 Auto-cleaning storage due to high usage...');
+          cleanupLocalStorage();
+        }
+      }
     }
   }, [isVisible]);
 
@@ -44,6 +57,38 @@ const DebugPanel = () => {
       } else {
         alert('❌ Failed to save defaults. Check console for details.');
       }
+    }
+  };
+
+  const handleStorageCleanup = () => {
+    if (window.confirm('Clean up old data to free storage space? This will remove temporary files and old backups.')) {
+      const cleanedItems = cleanupLocalStorage();
+      alert(`🧹 Cleaned up ${cleanedItems} items from storage!`);
+      refreshData();
+    }
+  };
+
+  const handleViewStorageUsage = () => {
+    const usage = getStorageUsage();
+    if (usage) {
+      const sizeInKB = Math.round(usage.totalSize / 1024);
+      const message = `📊 Storage Usage Report:
+      
+Total Size: ${sizeInKB} KB
+Usage: ${usage.usagePercent}% of estimated limit
+Largest Items:
+${Object.entries(usage.itemSizes)
+  .sort(([,a], [,b]) => b - a)
+  .slice(0, 5)
+  .map(([key, size]) => `• ${key}: ${Math.round(size/1024)} KB`)
+  .join('\n')}
+
+${usage.usagePercent > 80 ? '⚠️ Storage usage is high! Consider cleaning up.' : '✅ Storage usage is healthy.'}`;
+      
+      alert(message);
+      console.log('Full storage usage details:', usage);
+    } else {
+      alert('❌ Could not check storage usage.');
     }
   };
 
@@ -326,6 +371,44 @@ const DebugPanel = () => {
           }}
         >
           🗑️ Clear Photo Defaults
+        </button>
+      </div>
+
+      <div style={{ marginBottom: '10px', borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '10px' }}>
+        <div style={{ marginBottom: '5px', fontSize: '11px', opacity: 0.8 }}>
+          <strong>💾 Storage Management:</strong>
+        </div>
+        <button 
+          onClick={handleViewStorageUsage}
+          style={{ 
+            background: '#6c757d', 
+            border: 'none', 
+            color: 'white', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          📊 Storage Usage
+        </button>
+        <button 
+          onClick={handleStorageCleanup}
+          style={{ 
+            background: '#ffc107', 
+            border: 'none', 
+            color: 'black', 
+            padding: '5px 8px', 
+            borderRadius: '3px', 
+            cursor: 'pointer',
+            marginRight: '3px',
+            marginBottom: '3px',
+            fontSize: '10px'
+          }}
+        >
+          🧹 Cleanup Storage
         </button>
       </div>
 

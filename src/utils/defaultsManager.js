@@ -1,6 +1,38 @@
 // Utility to persist changes as hardcoded defaults in the source files
 import { getBirthdayDataSummary } from './localStorage';
 
+// Function to check localStorage usage
+export const getStorageUsage = () => {
+  try {
+    let totalSize = 0;
+    const itemSizes = {};
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key) {
+        const value = localStorage.getItem(key);
+        const size = new Blob([value]).size;
+        totalSize += size;
+        itemSizes[key] = size;
+      }
+    }
+    
+    // Rough estimate of localStorage limit (5MB in most browsers)
+    const estimatedLimit = 5 * 1024 * 1024; // 5MB
+    const usagePercent = Math.round((totalSize / estimatedLimit) * 100);
+    
+    return {
+      totalSize,
+      usagePercent,
+      itemSizes,
+      estimatedLimit
+    };
+  } catch (error) {
+    console.error('Error checking storage usage:', error);
+    return null;
+  }
+};
+
 // Generate updated default values based on current localStorage
 export const generateUpdatedDefaults = () => {
   const currentData = getBirthdayDataSummary();
@@ -150,29 +182,76 @@ export const generateBirthdayMessageDefaults = () => {
   };
 };
 
-// Function to save current state as new defaults
+// Function to clean up localStorage to free space
+export const cleanupLocalStorage = () => {
+  try {
+    // Remove old backups
+    const keysToRemove = [];
+    
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (
+        key.startsWith('birthday-defaults-backup') ||
+        key.startsWith('temp-') ||
+        key.includes('cache-')
+      )) {
+        keysToRemove.push(key);
+      }
+    }
+    
+    keysToRemove.forEach(key => {
+      localStorage.removeItem(key);
+      console.log(`🧹 Cleaned up: ${key}`);
+    });
+    
+    return keysToRemove.length;
+  } catch (error) {
+    console.error('❌ Error during cleanup:', error);
+    return 0;
+  }
+};
+
+// Function to save current state as new defaults (optimized)
 export const saveAsDefaults = async () => {
   try {
     console.log('💾 Generating new default values from current state...');
+    
+    // First, clean up old data to make space
+    const cleanedItems = cleanupLocalStorage();
+    if (cleanedItems > 0) {
+      console.log(`🧹 Cleaned up ${cleanedItems} old items to free space`);
+    }
     
     const defaults = generateUpdatedDefaults();
     const memoryData = generateMemoryDataCode();
     const heroDefaults = generateHeroSectionDefaults();
     const messageDefaults = generateBirthdayMessageDefaults();
     
-    // Create a backup of current values
+    // Create a lightweight backup (without large photo data)
     const backupData = {
       timestamp: new Date().toISOString(),
-      defaults,
+      defaults: {
+        heroTitle: defaults.heroTitle,
+        heroSubtitle: defaults.heroSubtitle,
+        birthdayMessageTitle: defaults.birthdayMessageTitle,
+        birthdayMessageText: defaults.birthdayMessageText,
+        memories: defaults.memories
+        // Exclude photos to save space
+      },
       memoryData,
       heroDefaults,
       messageDefaults
     };
     
-    // Save backup to localStorage
-    localStorage.setItem('birthday-defaults-backup', JSON.stringify(backupData));
+    // Try to save backup to localStorage with error handling
+    try {
+      localStorage.setItem('birthday-defaults-backup', JSON.stringify(backupData));
+      console.log('✅ New defaults generated and backed up (lightweight)');
+    } catch (quotaError) {
+      console.warn('⚠️ Could not save backup due to storage limits, but defaults generated successfully');
+    }
     
-    console.log('✅ New defaults generated and backed up:', {
+    console.log('✅ New defaults generated:', {
       heroTitle: heroDefaults.heroTitle,
       heroSubtitle: heroDefaults.heroSubtitle,
       messageTitle: messageDefaults.messageTitle,
