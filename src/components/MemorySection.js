@@ -101,7 +101,7 @@ const MemorySection = ({ id, title, text, photo, reverse, onTextUpdate }) => {
         </div>
         <PhotoContainer 
           photoId={`photo${id}.jpg`}
-          src={`images/${photo}`}
+          src={`photos/${photo}`}
           alt={title}
         />
       </div>
